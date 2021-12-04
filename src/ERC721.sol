@@ -47,12 +47,17 @@ contract ERC721 is IERC721 {
     }
 
     function balanceOf(address owner) external view override returns (uint) {
-        require(owner != address(0), "balance query for the zero address");
+        require(owner != address(0), "owner = zero address");
         return _balances[owner];
     }
 
-    function ownerOf(uint tokenId) public view override returns (address) {
-        address owner = _owners[tokenId];
+    function ownerOf(uint tokenId)
+        public
+        view
+        override
+        returns (address owner)
+    {
+        owner = _owners[tokenId];
         require(owner != address(0), "token doesn't exist");
         return owner;
     }
@@ -79,7 +84,7 @@ contract ERC721 is IERC721 {
         address owner = _owners[tokenId];
         require(
             msg.sender == owner || _operatorApprovals[owner][msg.sender],
-            "caller is not owner nor approved for all"
+            "not owner nor approved for all"
         );
         _approve(owner, to, tokenId);
     }
@@ -138,7 +143,7 @@ contract ERC721 is IERC721 {
         address owner = ownerOf(tokenId);
         require(
             _isApprovedOrOwner(owner, msg.sender, tokenId),
-            "caller is not owner nor approved"
+            "not owner nor approved"
         );
         _transfer(owner, from, to, tokenId);
     }
@@ -198,7 +203,7 @@ contract ERC721 is IERC721 {
         address owner = ownerOf(tokenId);
         require(
             _isApprovedOrOwner(owner, msg.sender, tokenId),
-            "caller is not owner nor approved"
+            "not owner nor approved"
         );
         _safeTransfer(owner, from, to, tokenId, _data);
     }
