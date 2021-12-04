@@ -7,6 +7,22 @@ import "./Address.sol";
 contract ERC721 is IERC721 {
     using Address for address;
 
+    event Transfer(
+        address indexed from,
+        address indexed to,
+        uint indexed tokenId
+    );
+    event Approval(
+        address indexed owner,
+        address indexed approved,
+        uint indexed tokenId
+    );
+    event ApprovalForAll(
+        address indexed owner,
+        address indexed operator,
+        bool approved
+    );
+
     // Mapping from token ID to owner address
     mapping(uint => address) private _owners;
 
@@ -68,12 +84,20 @@ contract ERC721 is IERC721 {
         _approve(owner, to, tokenId);
     }
 
-    function getApproved(uint tokenId) external view override returns (address) {
+    function getApproved(uint tokenId)
+        external
+        view
+        override
+        returns (address)
+    {
         require(_owners[tokenId] != address(0), "token doesn't exist");
         return _tokenApprovals[tokenId];
     }
 
-    function setApprovalForAll(address operator, bool approved) external override {
+    function setApprovalForAll(address operator, bool approved)
+        external
+        override
+    {
         _operatorApprovals[msg.sender][operator] = approved;
         emit ApprovalForAll(msg.sender, operator, approved);
     }
@@ -159,7 +183,10 @@ contract ERC721 is IERC721 {
         bytes memory _data
     ) private {
         _transfer(owner, from, to, tokenId);
-        require(_checkOnERC721Received(from, to, tokenId, _data), "not ERC721Receiver");
+        require(
+            _checkOnERC721Received(from, to, tokenId, _data),
+            "not ERC721Receiver"
+        );
     }
 
     function safeTransferFrom(
