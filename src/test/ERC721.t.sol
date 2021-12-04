@@ -1,14 +1,14 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.6;
 
 import "ds-test/test.sol";
-import "./Erc721.sol";
+import "../ERC721.sol";
 
-contract Erc721Test is DSTest {
-    Erc721 erc;
+contract ERC721Test is DSTest {
+    ERC721 erc;
 
     function setUp() public {
-        erc = new Erc721();
+        erc = new ERC721();
     }
 
     function testFail_basic_sanity() public {
