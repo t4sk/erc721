@@ -2,7 +2,6 @@
 pragma solidity ^0.8.6;
 
 import "ds-test/test.sol";
-
 import "./Erc721.sol";
 
 contract Erc721Test is DSTest {
