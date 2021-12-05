@@ -59,7 +59,6 @@ contract ERC721 is IERC721 {
     {
         owner = _owners[tokenId];
         require(owner != address(0), "token doesn't exist");
-        return owner;
     }
 
     function isApprovedForAll(address owner, address operator)
@@ -69,6 +68,24 @@ contract ERC721 is IERC721 {
         returns (bool)
     {
         return _operatorApprovals[owner][operator];
+    }
+
+    function setApprovalForAll(address operator, bool approved)
+        external
+        override
+    {
+        _operatorApprovals[msg.sender][operator] = approved;
+        emit ApprovalForAll(msg.sender, operator, approved);
+    }
+
+    function getApproved(uint tokenId)
+        external
+        view
+        override
+        returns (address)
+    {
+        require(_owners[tokenId] != address(0), "token doesn't exist");
+        return _tokenApprovals[tokenId];
     }
 
     function _approve(
@@ -87,24 +104,6 @@ contract ERC721 is IERC721 {
             "not owner nor approved for all"
         );
         _approve(owner, to, tokenId);
-    }
-
-    function getApproved(uint tokenId)
-        external
-        view
-        override
-        returns (address)
-    {
-        require(_owners[tokenId] != address(0), "token doesn't exist");
-        return _tokenApprovals[tokenId];
-    }
-
-    function setApprovalForAll(address operator, bool approved)
-        external
-        override
-    {
-        _operatorApprovals[msg.sender][operator] = approved;
-        emit ApprovalForAll(msg.sender, operator, approved);
     }
 
     function _isApprovedOrOwner(
@@ -162,19 +161,6 @@ contract ERC721 is IERC721 {
                     tokenId,
                     _data
                 ) == IERC721Receiver.onERC721Received.selector;
-            // try
-            //     IERC721Receiver(to).onERC721Received(msg.sender, from, tokenId, _data)
-            // returns (bytes4 val) {
-            //     return val == IERC721Receiver.onERC721Received.selector;
-            // } catch (bytes memory reason) {
-            //     if (reason.length == 0) {
-            //         revert("transfer to non ERC721Receiver implementer");
-            //     } else {
-            //         assembly {
-            //             revert(add(32, reason), mload(reason))
-            //         }
-            //     }
-            // }
         } else {
             return true;
         }
