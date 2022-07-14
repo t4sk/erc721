@@ -7,14 +7,14 @@ import "./Receiver.sol";
 import "../src/ERC721.sol";
 
 contract ERC721Test is DSTest {
-    ERC721 nft;
+    MyNFT nft;
     address alice;
     address bob;
     address carol;
     Receiver receiver;
 
     function setUp() public {
-        nft = new ERC721();
+        nft = new MyNFT();
         alice = address(new User(address(nft)));
         bob = address(new User(address(nft)));
         carol = address(new User(address(nft)));
@@ -44,26 +44,26 @@ contract ERC721Test is DSTest {
     function test_setApprovalForAll() public {
         assertTrue(!nft.isApprovedForAll(alice, bob));
 
-        ERC721(alice).setApprovalForAll(bob, true);
+        MyNFT(alice).setApprovalForAll(bob, true);
         assertTrue(nft.isApprovedForAll(alice, bob));
 
-        ERC721(alice).setApprovalForAll(bob, false);
+        MyNFT(alice).setApprovalForAll(bob, false);
         assertTrue(!nft.isApprovedForAll(alice, bob));
     }
 
     function testFail_approve_not_authorized() public {
-        ERC721(bob).approve(carol, 1);
+        MyNFT(bob).approve(carol, 1);
     }
 
     function test_approve_owner() public {
         assertEq(nft.getApproved(1), address(0));
-        ERC721(alice).approve(bob, 1);
+        MyNFT(alice).approve(bob, 1);
         assertEq(nft.getApproved(1), bob);
     }
 
     function test_approve_operator() public {
-        ERC721(alice).setApprovalForAll(bob, true);
-        ERC721(bob).approve(carol, 1);
+        MyNFT(alice).setApprovalForAll(bob, true);
+        MyNFT(bob).approve(carol, 1);
         assertEq(nft.getApproved(1), carol);
     }
 
@@ -72,11 +72,11 @@ contract ERC721Test is DSTest {
     }
 
     function testFail_transferFrom_token_does_not_exist() public {
-        ERC721(alice).transferFrom(alice, bob, 0);
+        MyNFT(alice).transferFrom(alice, bob, 0);
     }
 
     function test_transferFrom_owner() public {
-        ERC721(alice).transferFrom(alice, bob, 1);
+        MyNFT(alice).transferFrom(alice, bob, 1);
 
         assertEq(nft.balanceOf(alice), 0);
         assertEq(nft.balanceOf(bob), 1);
@@ -85,8 +85,8 @@ contract ERC721Test is DSTest {
     }
 
     function test_transferFrom_approved() public {
-        ERC721(alice).approve(bob, 1);
-        ERC721(bob).transferFrom(alice, bob, 1);
+        MyNFT(alice).approve(bob, 1);
+        MyNFT(bob).transferFrom(alice, bob, 1);
 
         assertEq(nft.balanceOf(alice), 0);
         assertEq(nft.balanceOf(bob), 1);
@@ -95,8 +95,8 @@ contract ERC721Test is DSTest {
     }
 
     function test_transferFrom_approved_for_all() public {
-        ERC721(alice).setApprovalForAll(bob, true);
-        ERC721(bob).transferFrom(alice, bob, 1);
+        MyNFT(alice).setApprovalForAll(bob, true);
+        MyNFT(bob).transferFrom(alice, bob, 1);
 
         assertEq(nft.balanceOf(alice), 0);
         assertEq(nft.balanceOf(bob), 1);
@@ -105,20 +105,15 @@ contract ERC721Test is DSTest {
     }
 
     function testFail_transferFrom_from_not_owner() public {
-        ERC721(alice).transferFrom(bob, bob, 1);
+        MyNFT(alice).transferFrom(bob, bob, 1);
     }
 
     function testFail_transferFrom_to_zero_address() public {
-        ERC721(alice).transferFrom(alice, address(0), 1);
+        MyNFT(alice).transferFrom(alice, address(0), 1);
     }
 
     function test_safeTransferFrom() public {
-        ERC721(alice).safeTransferFrom(
-            alice,
-            address(receiver),
-            1,
-            "test data"
-        );
+        MyNFT(alice).safeTransferFrom(alice, address(receiver), 1, "test data");
 
         assertEq(receiver.operator(), alice);
         assertEq(receiver.from(), alice);
@@ -128,12 +123,7 @@ contract ERC721Test is DSTest {
 
     function testFail_safeTransferFrom() public {
         receiver.setFail(true);
-        ERC721(alice).safeTransferFrom(
-            alice,
-            address(receiver),
-            1,
-            "test data"
-        );
+        MyNFT(alice).safeTransferFrom(alice, address(receiver), 1, "test data");
     }
 
     function invariant_isApprovedForAll() public {
