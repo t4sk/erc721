@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.6;
 
-import "../IERC721.sol";
+import "../src/IERC721.sol";
 
 contract Receiver is IERC721Receiver {
     address public operator;

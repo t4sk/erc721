@@ -4,7 +4,7 @@ pragma solidity ^0.8.6;
 import "ds-test/test.sol";
 import "./User.sol";
 import "./Receiver.sol";
-import "../ERC721.sol";
+import "../src/ERC721.sol";
 
 contract ERC721Test is DSTest {
     ERC721 nft;

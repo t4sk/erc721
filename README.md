@@ -1,6 +1,6 @@
 # erc721
 
 ```shell
-dapp build
-dapp test
+forge build
+forge test
 ```
