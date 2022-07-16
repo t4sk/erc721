@@ -48,6 +48,11 @@ contract ERC721 is IERC721 {
         return _balanceOf[owner];
     }
 
+    function setApprovalForAll(address operator, bool approved) external {
+        isApprovedForAll[msg.sender][operator] = approved;
+        emit ApprovalForAll(msg.sender, operator, approved);
+    }
+
     function approve(address spender, uint id) external {
         address owner = _ownerOf[id];
         require(
@@ -63,11 +68,6 @@ contract ERC721 is IERC721 {
     function getApproved(uint id) external view returns (address) {
         require(_ownerOf[id] != address(0), "token doesn't exist");
         return _approvals[id];
-    }
-
-    function setApprovalForAll(address operator, bool approved) external {
-        isApprovedForAll[msg.sender][operator] = approved;
-        emit ApprovalForAll(msg.sender, operator, approved);
     }
 
     function _isApprovedOrOwner(
